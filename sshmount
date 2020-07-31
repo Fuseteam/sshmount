@@ -1,0 +1,9 @@
+#!/bin/bash
+confile='sshfs.conf'
+function fetchHostAttribute(){
+    sed -n "/$1$/,/^Host/p" $confile|grep $2|awk '{print $2}'
+}
+[ -z $1 ] && echo missing host || LD=`fetchHostAttribute $1 'LocalDirectory'`
+[ -z $LD ] && echo host missing LocalDirectory attribute in $confile ||
+    RD=`fetchHostAttribute $1 'RemoteDirectory'`
+[ -z $RD ] && echo host missing RemoteDirectory attribute in $confile || sshfs $LD $1:$RD;
