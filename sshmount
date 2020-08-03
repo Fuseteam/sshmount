@@ -1,5 +1,5 @@
 #!/bin/bash
-confile='sshfs.conf'
+confile="$HOME/sshfs.conf"
 function fetchHostAttribute(){
     sed -n "/$1$/,/^Host/p" $confile|grep $2|awk '{print $2}'
 }
