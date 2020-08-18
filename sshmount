@@ -15,9 +15,14 @@ while getopts 'u:' flag; do
             exit;;
     esac
 done
-if [ -z $LD ]; then
-    [ -z $1 ] && echo "please specify host" || LD=`fetchHostAttribute $1 'LocalDirectory'`
-    [ -z $LD ] && echo host missing LocalDirectory attribute in $confile ||
-        RD=`fetchHostAttribute $1 'RemoteDirectory'`
-    [ -z $RD ] && echo host missing RemoteDirectory attribute in $confile || sshfs $LD $1:$RD;
+
+if [ -z "$1" ]; then
+    echo "please specify host";
+    exit
 fi
+
+LD=`fetchHostAttribute $1 'LocalDirectory'`;
+[ -z $LD ] && echo host missing LocalDirectory attribute in $confile \
+    || RD=`fetchHostAttribute $1 'RemoteDirectory'`
+[ -z $RD ] && echo host missing RemoteDirectory attribute in $confile\
+    || sshfs $LD $1:$RD;
