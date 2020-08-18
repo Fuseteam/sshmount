@@ -1,11 +1,18 @@
 #!/bin/bash
 confile="$HOME/sshfs.conf"
+
 function fetchHostAttribute(){
     sed -n "/$1$/,/^Host/p" $confile|grep $2|awk '{print $2}'
 }
+
 while getopts 'u:' flag; do
     case ${flag} in
-        u) LD=`fetchHostAttribute $2 'LocalDirectory'`;fusermount -$flag $LD;;
+        u) LD=`fetchHostAttribute $2 'LocalDirectory'`;
+           [ -n $LD ] && fusermount -$flag $LD \
+               || echo host missing LocalDirectory attribute in $confile
+           exit;;
+        *) echo 'please specify host';
+            exit;;
     esac
 done
 if [ -z $LD ]; then
