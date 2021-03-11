@@ -12,7 +12,7 @@ fi
 
 if [ ! -f "$confile" ]; then
     echo "Host hostname
-        LocalDirectory /absolute/path/to/local/directory
+        LocalDirectory  $HOME/sshfs
         RemoteDirectory /absolute/path/to/remote/directory" > $condir/fsconfig
 fi
 while getopts 'u:' flag; do
