@@ -6,6 +6,15 @@ function fetchHostAttribute(){
     sed -n "/$1$/,/^Host/p" $confile|grep $2|awk '{print $2}'
 }
 
+if [ ! -d "$condir" ]; then
+    mkdir $HOME/.ssh
+fi
+
+if [ ! -f "$confile" ]; then
+    echo "Host hostname
+        LocalDirectory /absolute/path/to/local/directory
+        RemoteDirectory /absolute/path/to/remote/directory" > $condir/fsconfig
+fi
 while getopts 'u:' flag; do
     case ${flag} in
         u) LD=`fetchHostAttribute $2 'LocalDirectory'`;
