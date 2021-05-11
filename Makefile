@@ -10,6 +10,6 @@ install:
 
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/sshmount\
-		$(COMPREFIX)/sshmount\
+	      $(COMPREFIX)/sshmount
 
 .PHONY: install uninstall
