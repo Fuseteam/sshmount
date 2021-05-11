@@ -9,3 +9,12 @@ it makes it possible to run `sshmount hostname` to mount a remote directory on a
 - `fsconfig` in this repo is an example config file
 - if `.ssh/fsconfig` doesn't already exist it will create it from the example config file
 - this can be used in combination with a ssh config file
+
+# Install
+```
+sudo make install
+```
+# Uninstall
+```
+sudo make uninstall
+```
