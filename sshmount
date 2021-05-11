@@ -11,9 +11,7 @@ if [ ! -d "$condir" ]; then
 fi
 
 if [ ! -f "$confile" ]; then
-    echo "Host hostname
-        LocalDirectory  $HOME/sshfs
-        RemoteDirectory /absolute/path/to/remote/directory" > $condir/fsconfig
+        cat fsconfig > $condir/fsconfig
 fi
 while getopts 'u:' flag; do
     case ${flag} in
