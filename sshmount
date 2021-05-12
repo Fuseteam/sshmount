@@ -59,3 +59,4 @@ LD=`fetchHostAttribute $Host 'LocalDirectory'`;
     || RD=`fetchHostAttribute $Host 'RemoteDirectory'`
 [ -z $RD ] && echo host missing RemoteDirectory attribute in $confile\
     || sshfs$flags $LD $Host:$RD;
+echo "$Host mounted at $LD";
