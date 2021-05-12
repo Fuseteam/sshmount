@@ -13,25 +13,49 @@ fi
 if [ ! -f "$confile" ]; then
         cat fsconfig > $condir/fsconfig
 fi
-while getopts 'u:' flag; do
+
+function print_usage(){
+echo 'usage: sshmount [user@]host
+
+sshmount makes use of sshfs to mount folders over ssh and of fusermount to unmount the folders
+
+fusermount options:
+
+[unmount]
+    -u HOST                 unmount and delete the mountpoint
+
+sshfs options:';
+sshfs --help;
+}
+
+while getopts 'fsCu:p:o:dlhV' flag; do
     case ${flag} in
-        u) LD=`fetchHostAttribute $2 'LocalDirectory'`;
+       u) LD=`fetchHostAttribute $2 'LocalDirectory'`;
            [ -n $LD ] && { fusermount -$flag $LD && rmdir $LD; }\
                || echo host missing LocalDirectory attribute in $confile
            exit;;
-        *) echo 'please specify host';
-            exit;;
+       p|o) flags+=" -$flag ${OPTARG}";;
+       C|f|1|s|d) flags+=" -$flag";;
+       V) sshfs --version;exit;;
+       *) print_usage;
+           exit;;
     esac
 done
 
-if [ -z "$1" ]; then
-    echo "please specify host";
+if [ -z "$flags" ]; then
+    Host=$1
+else
+    Host=$BASH_ARGV
+fi
+
+if [ -z "$Host" ]; then
+    print_usage;
     exit
 fi
 
-LD=`fetchHostAttribute $1 'LocalDirectory'`;
+LD=`fetchHostAttribute $Host 'LocalDirectory'`;
 [ ! -d $LD ] && mkdir $LD;
 [ -z $LD ] && echo host missing LocalDirectory attribute in $confile \
-    || RD=`fetchHostAttribute $1 'RemoteDirectory'`
+    || RD=`fetchHostAttribute $Host 'RemoteDirectory'`
 [ -z $RD ] && echo host missing RemoteDirectory attribute in $confile\
-    || sshfs $LD $1:$RD;
+    || sshfs$flags $LD $Host:$RD;
