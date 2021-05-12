@@ -16,7 +16,7 @@ fi
 while getopts 'u:' flag; do
     case ${flag} in
         u) LD=`fetchHostAttribute $2 'LocalDirectory'`;
-           [ -n $LD ] && fusermount -$flag $LD \
+           [ -n $LD ] && { fusermount -$flag $LD && rmdir $LD; }\
                || echo host missing LocalDirectory attribute in $confile
            exit;;
         *) echo 'please specify host';
