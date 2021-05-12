@@ -30,6 +30,7 @@ if [ -z "$1" ]; then
 fi
 
 LD=`fetchHostAttribute $1 'LocalDirectory'`;
+[ ! -d $LD ] && mkdir $LD;
 [ -z $LD ] && echo host missing LocalDirectory attribute in $confile \
     || RD=`fetchHostAttribute $1 'RemoteDirectory'`
 [ -z $RD ] && echo host missing RemoteDirectory attribute in $confile\
