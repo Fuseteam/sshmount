@@ -15,9 +15,10 @@ if [ ! -f "$confile" ]; then
 fi
 
 function print_usage(){
-echo 'usage: sshmount [user@]host
+echo 'usage: sshmount [options] [user@]host
 
 sshmount makes use of sshfs to mount folders over ssh and of fusermount to unmount the folders
+[options] should always to be specified before [user]@host
 
 fusermount options:
 
