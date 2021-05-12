@@ -1,3 +1,9 @@
-Host hostname
+Host user@ip
+    LocalDirectory /absolute/path/to/local/directory
+    RemoteDirectory /absolute/path/to/remote/directory
+------------------------------------------------------
+in combination with a ssh config file
+------------------------------------------------------
+Host HostName
     LocalDirectory /absolute/path/to/local/directory
     RemoteDirectory /absolute/path/to/remote/directory
