@@ -29,21 +29,22 @@ sshfs options:';
 sshfs --help;
 }
 
+flags=();
 while getopts 'fsCu:p:o:d1hV' flag; do
     case ${flag} in
        u) LD=$(fetchHostAttribute "$2" 'LocalDirectory');
            [ -n "$LD" ] && { fusermount -"$flag" "$LD" && rmdir "$LD"; }\
                || echo host missing LocalDirectory attribute in "$confile"
            exit;;
-       p|o) flags+=" -$flag '${OPTARG}'";;
-       C|f|1|s|d) flags+=" -$flag";;
+       p|o) flags+=(-$flag "${OPTARG}");;
+       C|f|1|s|d) flags+=(-"$flag");;
        V) sshfs --version;exit;;
        *) print_usage;
            exit;;
     esac
 done
 
-if [ -z "$flags" ]; then
+if [ -z "${flags[*]}" ]; then
     Host=$1
 else
     Host=$BASH_ARGV
@@ -59,5 +60,5 @@ LD=$(fetchHostAttribute "$Host" 'LocalDirectory');
 [ -z "$LD" ] && echo host missing LocalDirectory attribute in "$confile" \
     || RD=$(fetchHostAttribute "$Host" 'RemoteDirectory')
 [ -z "$RD" ] && echo host missing RemoteDirectory attribute in "$confile" \
-    || { set -x; sshfs"$flags" "$LD" "$Host":"$RD"; } &&
+    || { set -x; sshfs "${flags[@]}" "$LD" "$Host":"$RD"; } &&
 echo "$Host mounted at $LD";
