@@ -29,7 +29,7 @@ sshfs options:';
 sshfs --help;
 }
 
-while getopts 'fsCu:p:o:dlhV' flag; do
+while getopts 'fsCu:p:o:d1hV' flag; do
     case ${flag} in
        u) LD=`fetchHostAttribute $2 'LocalDirectory'`;
            [ -n $LD ] && { fusermount -$flag $LD && rmdir $LD; }\
