@@ -35,7 +35,7 @@ while getopts 'fsCu:p:o:dlhV' flag; do
            [ -n $LD ] && { fusermount -$flag $LD && rmdir $LD; }\
                || echo host missing LocalDirectory attribute in $confile
            exit;;
-       p|o) flags+=" -$flag ${OPTARG}";;
+       p|o) flags+=" -$flag '${OPTARG}'";;
        C|f|1|s|d) flags+=" -$flag";;
        V) sshfs --version;exit;;
        *) print_usage;
