@@ -3,15 +3,15 @@ condir="$HOME/.ssh"
 confile="$condir/fsconfig"
 
 function fetchHostAttribute(){
-    sed -n "/$1$/,/^Host/p" $confile|grep $2|awk '{print $2}'
+    sed -n "/$1$/,/^Host/p" "$confile"|grep "$2"|awk '{print $2}'
 }
 
 if [ ! -d "$condir" ]; then
-    mkdir $HOME/.ssh
+    mkdir "$HOME"/.ssh
 fi
 
 if [ ! -f "$confile" ]; then
-        cat fsconfig > $condir/fsconfig
+        cat fsconfig > "$condir"/fsconfig
 fi
 
 function print_usage(){
@@ -31,9 +31,9 @@ sshfs --help;
 
 while getopts 'fsCu:p:o:d1hV' flag; do
     case ${flag} in
-       u) LD=`fetchHostAttribute $2 'LocalDirectory'`;
-           [ -n $LD ] && { fusermount -$flag $LD && rmdir $LD; }\
-               || echo host missing LocalDirectory attribute in $confile
+       u) LD=`fetchHostAttribute "$2" 'LocalDirectory'`;
+           [ -n "$LD" ] && { fusermount -"$flag" "$LD" && rmdir "$LD"; }\
+               || echo host missing LocalDirectory attribute in "$confile"
            exit;;
        p|o) flags+=" -$flag '${OPTARG}'";;
        C|f|1|s|d) flags+=" -$flag";;
@@ -54,10 +54,10 @@ if [ -z "$Host" ]; then
     exit
 fi
 
-LD=`fetchHostAttribute $Host 'LocalDirectory'`;
-[ ! -d $LD ] && mkdir $LD;
-[ -z $LD ] && echo host missing LocalDirectory attribute in $confile \
-    || RD=`fetchHostAttribute $Host 'RemoteDirectory'`
-[ -z $RD ] && echo host missing RemoteDirectory attribute in $confile\
-    || { set -x; sshfs$flags $LD $Host:$RD; } &&
+LD=`fetchHostAttribute "$Host" 'LocalDirectory'`;
+[ ! -d "$LD" ] && mkdir "$LD";
+[ -z "$LD" ] && echo host missing LocalDirectory attribute in "$confile" \
+    || RD=`fetchHostAttribute "$Host" 'RemoteDirectory'`
+[ -z "$RD" ] && echo host missing RemoteDirectory attribute in "$confile" \
+    || { set -x; sshfs"$flags" "$LD" "$Host":"$RD"; } &&
 echo "$Host mounted at $LD";
