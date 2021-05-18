@@ -3,7 +3,9 @@ condir="$HOME/.ssh"
 confile="$condir/fsconfig"
 
 function fetchHostAttribute(){
-    sed -n "/$1$/,/^Host/p" "$confile"|grep "$2"|awk '{print $2}'
+    numhosts=$(sed -n "/$1$/,/^Host/p" "$confile"|grep "$2"|awk '{print $2}'|wc -l);
+    [[ "$numhosts" -gt "1" ]] && echo "1" && exit 1;
+    sed -n "/$1$/,/^Host/p" "$confile"|grep "$2"|awk '{print $2}';
 }
 
 if [ ! -d "$condir" ]; then
@@ -54,8 +56,8 @@ if [ -z "$Host" ]; then
     print_usage;
     exit
 fi
-
 LD=$(fetchHostAttribute "$Host" 'LocalDirectory');
+[ "$LD" = "1" ] && { echo no unique match! check in the "$confile" that "$Host" is only used once;exit 1; }
 [ ! -d "$LD" ] && mkdir "$LD";
 [ -z "$LD" ] && echo host missing LocalDirectory attribute in "$confile" \
     || RD=$(fetchHostAttribute "$Host" 'RemoteDirectory')
