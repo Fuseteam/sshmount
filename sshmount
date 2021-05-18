@@ -57,6 +57,17 @@ if [ -z "$Host" ]; then
     exit
 fi
 LD=$(fetchHostAttribute "$Host" 'LocalDirectory');
+#################################################################################
+# the first host in fsconfig can have two localdirectories and remote directories
+#   it should then be of the form
+#        LocalDirectory /path/to/local/directory
+#        RemoteDirectory /path/to/remote/directory
+#   Host host
+#        LocalDirectory /path/to/local/directory
+#        RemoteDirectory /path/to/remote/directory
+#################################################################################
+[[ "$LD" = *"$Host" ]] && { Host=$(sed -n "/$Host$/,/^Host/p" "$confile"|grep Host|awk '{print $2}'); }
+
 [ "$LD" = "1" ] && { echo no unique match! check in the "$confile" that "$Host" is only used once;exit 1; }
 [ ! -d "$LD" ] && mkdir "$LD";
 [ -z "$LD" ] && echo host missing LocalDirectory attribute in "$confile" \
