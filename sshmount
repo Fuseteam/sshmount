@@ -3,9 +3,11 @@ condir="$HOME/.ssh"
 confile="$condir/fsconfig"
 
 function fetchHostAttribute(){
-    numhosts=$(sed -n "/$1$/,/^Host/p" "$confile"|grep "$2"|awk '{print $2}'|wc -l);
+    numhosts=$(sed -n "/$1$/,/^$2/p" "$confile"|grep "$3"|awk '{print $2}'|wc -l);
     [[ "$numhosts" -gt "1" ]] && echo "1" && exit 1;
-    sed -n "/$1$/,/^Host/p" "$confile"|grep "$2"|awk '{print $2}';
+    attrhost=$(sed -n "/$1$/,/^$2/p" "$confile"|grep "$3"|awk '{print $2}');
+    [[ -z "$attrhost" ]] && echo "2" && exit 2;
+    echo "$attrhost"
 }
 
 if [ ! -d "$condir" ]; then
@@ -34,7 +36,7 @@ sshfs --help;
 flags=();
 while getopts 'fsCu:p:o:d1hV' flag; do
     case ${flag} in
-       u) LD=$(fetchHostAttribute "$2" 'LocalDirectory');
+       u) LD=$(fetchHostAttribute "$2" 'Host' 'LocalDirectory');
            [ -n "$LD" ] && { fusermount -"$flag" "$LD" && rmdir "$LD"; }\
                || echo host missing LocalDirectory attribute in "$confile"
            exit;;
@@ -56,22 +58,26 @@ if [ -z "$Host" ]; then
     print_usage;
     exit
 fi
-LD=$(fetchHostAttribute "$Host" 'LocalDirectory');
+LD=$(fetchHostAttribute "$Host" '---' 'LocalDirectory');
+RD=$(fetchHostAttribute "$Host" '---' 'RemoteDirectory'); 
+[[ "$LD" = "1" ]] && { LD=$(fetchHostAttribute "$Host" 'Host' 'LocalDirectory'); }
+[[ "$RD" = "1" ]] && { RD=$(fetchHostAttribute "$Host" 'Host' 'RemoteDirectory'); }
 #################################################################################
 # the first host in fsconfig can have two localdirectories and remote directories
 #   it should then be of the form
+#
+#   ---
 #        LocalDirectory /path/to/local/directory
 #        RemoteDirectory /path/to/remote/directory
 #   Host host
 #        LocalDirectory /path/to/local/directory
 #        RemoteDirectory /path/to/remote/directory
+#   ---
 #################################################################################
-[[ "$LD" = *"$Host" ]] && { Host=$(sed -n "/$Host$/,/^Host/p" "$confile"|grep Host|awk '{print $2}'); }
+[[ "$LD" = *"$Host" ]] && { Host=$(fetchHostAttribute "$Host" "Host" "Host"); }
 
-[ "$LD" = "1" ] && { echo no unique match! check in the "$confile" that "$Host" is only used once;exit 1; }
+[[ "$LD" = "1" || "$Host" = "1" || "$RD" = "1" ]] && { echo no unique match! check in the "$confile" that "$Host" is only used once;exit 1; }
+
+[[ "$LD" = "2" || "$RD" = "2" ]] && { echo host missing attributes in "$confile"; exit 2; }
 [ ! -d "$LD" ] && mkdir "$LD";
-[ -z "$LD" ] && echo host missing LocalDirectory attribute in "$confile" \
-    || RD=$(fetchHostAttribute "$Host" 'RemoteDirectory')
-[ -z "$RD" ] && echo host missing RemoteDirectory attribute in "$confile" \
-    || { set -x; sshfs "${flags[@]}" "$LD" "$Host":"$RD"; } &&
-echo "$Host mounted at $LD";
+{ set -x; sshfs "${flags[@]}" "$LD" "$Host":"$RD"; } && echo "$Host mounted at $LD";
