@@ -80,4 +80,4 @@ RD=$(fetchHostAttribute "$Host" '---' 'RemoteDirectory');
 
 [[ "$LD" = "2" || "$RD" = "2" ]] && { echo host missing attributes in "$confile"; exit 2; }
 [ ! -d "$LD" ] && mkdir "$LD";
-{ set -x; sshfs "${flags[@]}" "$LD" "$Host":"$RD"; } && echo "$Host mounted at $LD";
+set -x; sshfs "${flags[@]}" "$LD" "$Host":"$RD";
