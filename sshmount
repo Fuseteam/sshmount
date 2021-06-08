@@ -3,9 +3,9 @@ condir="$HOME/.ssh"
 confile="$condir/fsconfig"
 
 function fetchHostAttribute(){
-    numhosts=$(sed -n "/$1$/,/^$2/p" "$confile"|grep "$3"|awk '{print $2}'|wc -l);
+    numhosts=$(sed -n "/$1$/,/^$2/p" "$confile"|awk "/$3/{print \$2}"|wc -l);
     [[ "$numhosts" -gt "1" ]] && echo "1" && exit 1;
-    attrhost=$(sed -n "/$1$/,/^$2/p" "$confile"|grep "$3"|awk '{print $2}');
+    attrhost=$(sed -n "/$1$/,/^$2/p" "$confile"|awk "/$3/{print \$2}");
     [[ -z "$attrhost" ]] && echo "2" && exit 2;
     echo "$attrhost"
 }
