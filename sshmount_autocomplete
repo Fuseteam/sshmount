@@ -1,11 +1,20 @@
 #!/bin/bash
+function getLocalDirs(){
+   awk '/Host/{print $2}' ~/.ssh/config
+   readarray -t LocalDirs < <(awk '/LocalDirectory/{print $2}' ~/.ssh/fsconfig)
+   for LocalDir in ${LocalDirs[@]}
+   do
+       basename $LocalDir;
+   done;
+}
+
 _ssh() 
 {
     local cur prev opts
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts=$(awk '/Host/{print $2}' ~/.ssh/config)
+    opts=$(getLocalDirs)
 
     COMPREPLY=( $(compgen -W "$opts" -- ${cur}) )
     return 0

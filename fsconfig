@@ -7,3 +7,10 @@ in combination with a ssh config file
 Host HostName
     LocalDirectory /absolute/path/to/local/directory
     RemoteDirectory /absolute/path/to/remote/directory
+------------------------------------------------------
+mount by LocalDirectory
+------------------------------------------------------
+---
+    LocalDirectory /absolute/path/to/local/directory
+    RemoteDirectory /absolute/path/to/remote/directory
+Host HostName

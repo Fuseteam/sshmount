@@ -63,16 +63,13 @@ RD=$(fetchHostAttribute "$Host" '---' 'RemoteDirectory');
 [[ "$LD" = "1" ]] && { LD=$(fetchHostAttribute "$Host" 'Host' 'LocalDirectory'); }
 [[ "$RD" = "1" ]] && { RD=$(fetchHostAttribute "$Host" 'Host' 'RemoteDirectory'); }
 #################################################################################
-# the first host in fsconfig can have two localdirectories and remote directories
+#   to mount by localdirectory
 #   it should then be of the form
 #
 #   ---
 #        LocalDirectory /path/to/local/directory
 #        RemoteDirectory /path/to/remote/directory
 #   Host host
-#        LocalDirectory /path/to/local/directory
-#        RemoteDirectory /path/to/remote/directory
-#   ---
 #################################################################################
 [[ "$LD" = *"$Host" ]] && { Host=$(fetchHostAttribute "$Host" "Host" "Host"); }
 
