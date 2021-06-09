@@ -14,9 +14,13 @@ _ssh()
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts=$(getLocalDirs)
+    case "${cur}" in
+        -*)
+            COMPREPLY=( $(compgen -W "$(_parse_help $1)" -- ${cur}) );;
+        *)
+            COMPREPLY=( $(compgen -W "$(getLocalDirs)" -- ${cur}) );;
+    esac
 
-    COMPREPLY=( $(compgen -W "$opts" -- ${cur}) )
     return 0
 }
 complete -F _ssh sshmount
