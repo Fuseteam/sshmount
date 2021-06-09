@@ -1,6 +1,6 @@
 #!/bin/bash
 function getLocalDirs(){
-   awk '/Host/{print $2}' ~/.ssh/config
+   awk '/Host/{print $2}' ~/.ssh/fsconfig
    readarray -t LocalDirs < <(awk '/LocalDirectory/{print $2}' ~/.ssh/fsconfig)
    for LocalDir in ${LocalDirs[@]}
    do
