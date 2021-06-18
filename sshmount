@@ -36,7 +36,7 @@ sshfs --help;
 flags=();
 while getopts 'fsCu:p:o:d1hV' flag; do
     case ${flag} in
-       u) LD=$(fetchHostAttribute "$2" 'Host' 'LocalDirectory');
+       u) LD=$(fetchHostAttribute "$2" '---' 'LocalDirectory');
            [ -n "$LD" ] && { fusermount -"$flag" "$LD" && rmdir "$LD" || echo "$LD" is not mounted; }\
                || echo host missing LocalDirectory attribute in "$confile"
            exit;;
