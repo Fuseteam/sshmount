@@ -77,4 +77,4 @@ RD=$(fetchHostAttribute "$Host" '---' 'RemoteDirectory');
 
 [[ "$LD" = "2" || "$RD" = "2" ]] && { echo host missing attributes in "$confile"; exit 2; }
 [ ! -d "$LD" ] && mkdir "$LD";
-set -x; sshfs "${flags[@]}" "$LD" "$Host":"$RD";
+set -x; sshfs -o reconnect,ServerAliveInterval=15,sshfs_sync,sync_readdir "${flags[@]}" "$LD" "$Host":"$RD";
