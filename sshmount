@@ -34,12 +34,14 @@ sshfs --help;
 }
 
 flags=();
-while getopts 'fsCu:p:o:d1hV' flag; do
+fwdflag='';
+while getopts 'fsCu:p:o:Fd1hV' flag; do
     case ${flag} in
        u) LD=$(fetchHostAttribute "$2" '---' 'LocalDirectory');
            [ -n "$LD" ] && { fusermount -"$flag" "$LD" && rmdir "$LD" || echo "$LD" is not mounted; }\
                || echo host missing LocalDirectory attribute in "$confile"
            exit;;
+       F) fwdflag='true';;
        p|o) flags+=(-$flag "${OPTARG}");;
        C|f|1|s|d) flags+=(-"$flag");;
        V) sshfs --version;exit;;
@@ -47,8 +49,7 @@ while getopts 'fsCu:p:o:d1hV' flag; do
            exit;;
     esac
 done
-
-if [ -z "${flags[*]}" ]; then
+if [[ -z "${flags[*]}" && -z "$fwdflag" ]]; then
     Host=$1
 else
     Host=$BASH_ARGV
@@ -75,6 +76,8 @@ RD=$(fetchHostAttribute "$Host" '---' 'RemoteDirectory');
 
 [[ "$LD" = "1" || "$Host" = "1" || "$RD" = "1" ]] && { echo no unique match! check in the "$confile" that "$Host" is only used once;exit 1; }
 
+
 [[ "$LD" = "2" || "$RD" = "2" ]] && { echo host missing attributes in "$confile"; exit 2; }
 [ ! -d "$LD" ] && mkdir "$LD";
-set -x; sshfs -o reconnect,ServerAliveInterval=15,sshfs_sync,sync_readdir "${flags[@]}" "$LD" "$Host":"$RD";
+[ ! -z "$fwdflag" ] && fwd=",ssh_command=ssh -oClearAllForwardings=no";
+set -x; sshfs -o reconnect,ServerAliveInterval=15,sshfs_sync,sync_readdir,allow_root"$fwd" "${flags[@]}" "$LD" "$Host":"$RD";
