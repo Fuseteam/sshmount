@@ -10,6 +10,8 @@ it makes it possible to run `sshmount hostname` to mount a remote directory on a
 - if `.ssh/fsconfig` doesn't already exist it will create it from the example config file
 - this can be used in combination with a ssh config file
 - pass through sshfs flags such as -f, -s, -C, -p, -o, -d, -1, -V and -h to sshfs
+- pass through ssh flags with -S example `sshmount -S "-L 3306:127.0.0.1:3306"`
+- allow ssh tunneling by with -F example: `sshmount -F host`
 
 # Install
 ```
