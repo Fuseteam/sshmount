@@ -76,12 +76,15 @@ RD=$(fetchHostAttribute "$Host" '---' 'RemoteDirectory');
 #        RemoteDirectory /path/to/remote/directory
 #   Host host
 #################################################################################
-[[ "$LD" = *"$Host" ]] && { Host=$(fetchHostAttribute "$Host" "Host" "Host"); }
+ tsoH=$(fetchHostAttribute "$Host" "Host" "Host");
+[[ -z "$tsoH" || "$tsoH" = 2 ]] && { echo host "$Host" not defined in "$confile"; exit 2; }
+[[ "$tsoH" = "1" ]] && {  tsoH=$(fetchHostAttribute "$Host" "---" "Host"); }
+[[ "$tsoH" != "1" && -n "$tsoH" ]] && Host="$tsoH";
 
-[[ "$LD" = "1" || "$Host" = "1" || "$RD" = "1" ]] && { echo no unique match! check in the "$confile" that "$Host" is only used once;exit 1; }
+[[ "$LD" = "1" || "$tsoH" = "1" || "$RD" = "1" ]] && { echo no unique match! check in the "$confile" that "$Host" is only used once;exit 1; }
 
-
-[[ "$LD" = "2" || "$RD" = "2" ]] && { echo host missing attributes in "$confile"; exit 2; }
+[[ "$LD" = "2" ]] && { echo host $host missing LocalDirectory attribute in "$confile"; exit 2; }
+[[ "$RD" = "2" ]] && { echo host $host missing RemoteDirectory attribute in "$confile"; exit 2; }
 [ ! -d "$LD" ] && mkdir "$LD";
 [ ! -z "$fwdflag" ] && fwd=",ssh_command=ssh -oClearAllForwardings=no";
 [ ! -z "$sshflag" ] && ssh=",ssh_command=ssh $sshopts";
