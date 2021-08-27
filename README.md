@@ -12,6 +12,7 @@ it makes it possible to run `sshmount hostname` to mount a remote directory on a
 - pass through sshfs flags such as -f, -s, -C, -p, -o, -d, -1, -V and -h to sshfs
 - pass through ssh flags with -S example `sshmount -S "-o ClearAllForwardings=no -L 3306:127.0.0.1:3306"`
 - allow ssh tunneling by with -F example: `sshmount -F host`
+- allow ssh tunneling by specifying "PortForwarding yes" in fsconfig
 
 # Install
 ```

@@ -30,3 +30,22 @@ Host HostName
     LocalDirectory /absolute/path/to/second/local/directory
     RemoteDirectory /absolute/path/to/second/remote/directory
 ---
+
+------------------------------------------------------
+mount by HostName and allow PortForwarding
+------------------------------------------------------
+---
+    LocalDirectory /absolute/path/to/local/directory
+    RemoteDirectory /absolute/path/to/remote/directory
+    PortForwarding yes
+Host HostName
+---
+
+------------------------------------------------------
+mount by LocalDirectory and allow PortForwarding
+------------------------------------------------------
+Host HostName
+    LocalDirectory /absolute/path/to/local/directory
+    RemoteDirectory /absolute/path/to/remote/directory
+    PortForwarding yes
+---
