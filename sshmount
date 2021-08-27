@@ -56,7 +56,7 @@ done
 if [[ -z "${flags[*]}" && -z "$fwdflag" && -z "$sshflag" ]]; then
     Host=$1
 else
-    Host=$BASH_ARGV
+    Host=${BASH_ARGV[0]}
 fi
 
 if [ -z "$Host" ]; then
