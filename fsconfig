@@ -1,12 +1,16 @@
 Host user@ip
     LocalDirectory /absolute/path/to/local/directory
     RemoteDirectory /absolute/path/to/remote/directory
+---
+
 ------------------------------------------------------
 in combination with a ssh config file
 ------------------------------------------------------
 Host HostName
     LocalDirectory /absolute/path/to/local/directory
     RemoteDirectory /absolute/path/to/remote/directory
+---
+
 ------------------------------------------------------
 mount by LocalDirectory
 ------------------------------------------------------
@@ -14,3 +18,15 @@ mount by LocalDirectory
     LocalDirectory /absolute/path/to/local/directory
     RemoteDirectory /absolute/path/to/remote/directory
 Host HostName
+---
+
+------------------------------------------------------
+mount by LocalDirectory and by HostName
+------------------------------------------------------
+---
+    LocalDirectory /absolute/path/to/local/directory
+    RemoteDirectory /absolute/path/to/remote/directory
+Host HostName
+    LocalDirectory /absolute/path/to/second/local/directory
+    RemoteDirectory /absolute/path/to/second/remote/directory
+---
