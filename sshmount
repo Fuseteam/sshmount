@@ -68,7 +68,7 @@ RD=$(fetchHostAttribute "$Host" '---' 'RemoteDirectory');
 PFwd=$(fetchHostAttribute "$Host" "---" "PortForwarding");
 [[ "$LD" = "1" ]] && { LD=$(fetchHostAttribute "$Host" 'Host' 'LocalDirectory'); }
 [[ "$RD" = "1" ]] && { RD=$(fetchHostAttribute "$Host" 'Host' 'RemoteDirectory'); }
-[[ -n "$PFwd" && "$PFwd" = "yes" ]] && { sshflag='true'; sshopts="-oClearAllForwardings=no"; }
+[[ -n "$PFwd" && "$PFwd" = "yes" ]] && { sshflag='true'; sshopts="-oClearAllForwardings=no "$sshopts; }
 #################################################################################
 #   to mount by localdirectory
 #   it should then be of the form
