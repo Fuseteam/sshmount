@@ -6,16 +6,9 @@ function fetchHostAttribute(){
     numhosts=$(sed -n "/$1$/,/^$2/p" "$confile"|awk "/$3/{print \$2}"|wc -l);
     [[ "$numhosts" -gt "1" && -z $4 ]] && echo "1" && exit 1;
     [[ -z "$4" ]] && attrhost=$(sed -n "/$1$/,/^$2/p" "$confile"|awk "/$3/{print \$2}");
-    [[ -n "$4" ]] && attrhost=$(sed -n "/$1$/,/^$2/p" "$confile"|awk "BEGIN{OFS = \":\";}/$3/{print \$2,\$3}");
+    [[ -n "$4" ]] && attrhost=$(sed -n "/$1$/,/^$2/p" "$confile"|awk "/$3/{printf \"%s %s:%s\",\" $4\",\$2,\$3;}");
     [[ -z "$attrhost" ]] && echo "2" && exit 2;
     echo "$attrhost"
-}
-
-function fetchAllPorts(){
-    Fwd=$(fetchHostAttribute "$1" "$2" "$3" "$4");
-    [[ "$Fwd" = "2" ]] && { echo $Fwd;exit; }
-    readarray -t ports < <(echo $Fwd);
-    echo "$4 "${ports// / $4 };
 }
 
 if [ ! -d "$condir" ]; then
@@ -74,8 +67,8 @@ fi
 LD=$(fetchHostAttribute "$Host" '---' 'LocalDirectory');
 RD=$(fetchHostAttribute "$Host" '---' 'RemoteDirectory');
 PFwd=$(fetchHostAttribute "$Host" "---" "PortForwarding");
-LFwd=$(fetchAllPorts "$Host" "---" "LocalForward" "-L");
-RFwd=$(fetchAllPorts "$Host" "---" "RemoteForward" "-R");
+LFwd=$(fetchHostAttribute "$Host" "---" "LocalForward" "-L");
+RFwd=$(fetchHostAttribute "$Host" "---" "RemoteForward" "-R");
 [[ "$LD" = "1" ]] && { LD=$(fetchHostAttribute "$Host" 'Host' 'LocalDirectory'); }
 [[ "$RD" = "1" ]] && { RD=$(fetchHostAttribute "$Host" 'Host' 'RemoteDirectory'); }
 if [[ -n "$PFwd" && "$PFwd" = "yes" && -z "$sshopts" ]]; then
@@ -83,8 +76,8 @@ if [[ -n "$PFwd" && "$PFwd" = "yes" && -z "$sshopts" ]]; then
 elif [[ -n "$PFwd" && "$PFwd" = "yes" && -n "$sshopts" ]]; then
     { sshflag='true'; sshopts="-oClearAllForwardings=no $sshopts"; }
 fi
-[[ -n "$LFwd" && "$LFwd" != "2" ]] && {  sshopts="$sshopts $LFwd"; } #sshopts="$sshopts -L$LFwd"; }
-[[ -n "$RFwd" && "$RFwd" != "2" ]] && { sshopts="$sshopts $RFwd"; }
+[[ -n "$LFwd" && "$LFwd" != "2" ]] && { sshopts="$sshopts$LFwd"; } #sshopts="$sshopts -L$LFwd"; }
+[[ -n "$RFwd" && "$RFwd" != "2" ]] && { sshopts="$sshopts$RFwd"; }
 #################################################################################
 #   to mount by localdirectory
 #   it should then be of the form
