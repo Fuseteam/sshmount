@@ -79,6 +79,7 @@ RFwd=$(fetchAllPorts "$Host" "---" "RemoteForward" "-R");
 [[ "$LD" = "1" ]] && { LD=$(fetchHostAttribute "$Host" 'Host' 'LocalDirectory'); }
 [[ "$RD" = "1" ]] && { RD=$(fetchHostAttribute "$Host" 'Host' 'RemoteDirectory'); }
 [[ -n "$PFwd" && "$PFwd" = "yes" && -z "$sshopts" ]] && { sshflag='true'; sshopts="-oClearAllForwardings=no"; }
+[[ -n "$PFwd" && "$PFwd" = "yes" && -n "$sshopts" ]] && { sshflag='true'; sshopts="-oClearAllForwardings=no $sshopts"; }
 [[ -n "$LFwd" && "$LFwd" != "2" ]] && {  sshopts="$sshopts $LFwd"; } #sshopts="$sshopts -L$LFwd"; }
 [[ -n "$RFwd" && "$RFwd" != "2" ]] && { sshopts="$sshopts $RFwd"; }
 #################################################################################
