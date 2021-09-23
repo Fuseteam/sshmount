@@ -13,7 +13,10 @@ _ssh()
         -*)
             COMPREPLY=( $(compgen -W "$(_parse_help $1)" -- ${cur}) );;
         *)
-            COMPREPLY=( $(compgen -W "$(getLocalDirs)" -- ${cur}) );;
+            if [ "${prev}" != "-u" ];
+            then COMPREPLY=( $(compgen -W "$(getLocalDirs)" -- ${cur}) );
+            else COMPREPLY=( $(compgen -W "$(getMountedDirs)" -- ${cur}) );
+                fi;;
     esac
 
     return 0
