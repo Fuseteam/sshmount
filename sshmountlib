@@ -1,0 +1,54 @@
+#!/bin/bash
+condir="$HOME/.ssh"
+confile="$condir/fsconfig"
+
+function listMounts(){
+readarray -t mntpnts < <(awk '/LocalDirectory/{print $2}' ${confile});
+for mntpnt in "${mntpnts[@]}"
+do
+    awk "/${mntpnt//\//\\\/}/{print \$2}" /etc/mtab
+done;
+}
+
+function getLocalDirs(){
+   awk '/Host/{print $2}' ${confile}
+   readarray -t LocalDirs < <(awk '/LocalDirectory/{print $2}' ${confile})
+   for LocalDir in ${LocalDirs[@]}
+   do
+       basename $LocalDir;
+   done;
+}
+
+function getMountedDirs(){
+    readarray -t mounts < <(listMounts);
+    for mount in "${mounts[@]}"
+    do
+        basename $mount;
+    done;
+}
+
+
+function fetchHostAttribute(){
+    numhosts=$(sed -n "/$1$/,/^$2/p" "$confile"|awk "/$3/{print \$2}"|wc -l);
+    [[ "$numhosts" -gt "1" && -z $4 ]] && echo "1" && exit 1;
+    [[ -z "$4" ]] && attrhost=$(sed -n "/$1$/,/^$2/p" "$confile"|awk "/$3/{print \$2}");
+    [[ -n "$4" ]] && attrhost=$(sed -n "/$1$/,/^$2/p" "$confile"|awk "/$3/{printf \"%s %s:%s\",\" $4\",\$2,\$3;}");
+    [[ -z "$attrhost" ]] && echo "2" && exit 2;
+    echo "$attrhost"
+}
+
+function print_usage(){
+echo 'usage: sshmount [options] [user@]host
+
+sshmount makes use of sshfs to mount folders over ssh and of fusermount to unmount the folders
+[options] should always to be specified before [user]@host
+
+fusermount options:
+
+[unmount]
+    -u HOST                 unmount and delete the mountpoint
+
+sshfs options:';
+sshfs --help;
+}
+

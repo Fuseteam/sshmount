@@ -5,7 +5,10 @@ include config.mk
 install:
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	cp -f sshmount $(DESTDIR)$(PREFIX)/bin
+	cp -f sshmountlib $(DESTDIR)$(PREFIX)/lib
 	cp sshmount_autocomplete $(COMPREFIX)/sshmount
+	sed -i 's|@prefix@|$(DESTDIR)$(PREFIX)|' $(DESTDIR)$(PREFIX)/bin/sshmount
+	sed -i 's|@prefix@|$(DESTDIR)$(PREFIX)|' $(COMPREFIX)/sshmount
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/sshmount
 
 uninstall:
