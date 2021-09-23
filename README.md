@@ -14,6 +14,7 @@ it makes it possible to run `sshmount hostname` to mount a remote directory on a
 - allow ssh tunneling by with -F example: `sshmount -F host`
 - allow ssh tunneling by specifying "PortForwarding yes" in fsconfig
 - allow localforward and remoteforward rules to be added in fsconfig
+- list mounted directories with sshmount -l
 
 # Install
 ```

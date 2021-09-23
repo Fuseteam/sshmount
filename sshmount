@@ -34,11 +34,19 @@ sshfs options:';
 sshfs --help;
 }
 
+function listMounts(){
+readarray -t mntpnts < <(awk '/LocalDirectory/{print $2}' ${HOME}/.ssh/fsconfig);
+for mntpnt in "${mntpnts[@]}"
+do
+    awk "/${mntpnt//\//\\\/}/{print \$2}" /etc/mtab
+done;
+}
+
 flags=();
 fwdflag='';
 sshflag='';
 sshopts='';
-while getopts 'fsCu:p:o:FS:d1hV' flag; do
+while getopts 'fsCu:p:o:FS:d1hlV' flag; do
     case ${flag} in
        u) LD=$(fetchHostAttribute "$2" '---' 'LocalDirectory');
            [[ "$LD" = "1" ]] && { LD=$(fetchHostAttribute "$2" 'Host' 'LocalDirectory'); }
@@ -50,6 +58,7 @@ while getopts 'fsCu:p:o:FS:d1hV' flag; do
        p|o) flags+=(-$flag "${OPTARG}");;
        C|f|1|s|d) flags+=(-"$flag");;
        V) sshfs --version;exit;;
+       l) listMounts;exit;;
        *) print_usage;
            exit;;
     esac
