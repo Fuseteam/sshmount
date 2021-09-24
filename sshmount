@@ -59,21 +59,37 @@ elif [[ -n "$PFwd" && "$PFwd" = "yes" && -n "$sshopts" ]]; then
 fi
 [[ -n "$LFwd" && "$LFwd" != "2" ]] && { sshopts="$sshopts$LFwd"; } #sshopts="$sshopts -L$LFwd"; }
 [[ -n "$RFwd" && "$RFwd" != "2" ]] && { sshopts="$sshopts$RFwd"; }
-#################################################################################
-#   to mount by localdirectory
-#   it should then be of the form
+#############################################################################################
+#   up to 2 Directories can be assigned to a single host by defining it in the following form 
 #
 #   ---
 #        LocalDirectory /path/to/local/directory
 #        RemoteDirectory /path/to/remote/directory
 #   Host host
-#################################################################################
- tsoH=$(fetchHostAttribute "$Host" "Host" "Host");
-[[ -z "$tsoH" || "$tsoH" = 2 ]] && { echo host "$Host" not defined in "$confile"; exit 2; }
-[[ "$tsoH" = "1" ]] && {  tsoH=$(fetchHostAttribute "$Host" "---" "Host"); }
-[[ "$tsoH" != "1" && -n "$tsoH" ]] && Host="$tsoH";
-
-[[ "$LD" = "1" || "$tsoH" = "1" || "$RD" = "1" ]] && { echo no unique match! check in the "$confile" that "$Host" is only used once;exit 1; }
+#        LocalDirectory /path/to/local/directory2
+#        RemoteDirectory /path/to/remote/directory2
+#   ---
+#
+#   for assigning a single directory 2 forms are supported
+#
+#   form #1
+#
+#   ---
+#        LocalDirectory /path/to/local/directory
+#        RemoteDirectory /path/to/remote/directory
+#   Host host
+#   ---
+#
+#   form #2
+#
+#   ---
+#   Host host
+#        LocalDirectory /path/to/local/directory2
+#        RemoteDirectory /path/to/remote/directory2
+#   ---
+#
+#   all host must be separate by a row of '---' at the moment
+#############################################################################################
 
 [[ "$LD" = "2" ]] && { echo host $host missing LocalDirectory attribute in "$confile"; exit 2; }
 [[ "$RD" = "2" ]] && { echo host $host missing RemoteDirectory attribute in "$confile"; exit 2; }
