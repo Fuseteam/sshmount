@@ -1,9 +1,9 @@
 #!/bin/bash
 prefix="@prefix@/lib"
-if [ "${prefix}" = "@prefix@/lib" ]; then prefix=".";fi
+if [ "${prefix:0:1}" = "@" ]; then prefix=".";fi
 source "${prefix}"/sshmountlib
 
-_ssh() 
+_ssh()
 {
     local cur prev opts
     COMPREPLY=()
