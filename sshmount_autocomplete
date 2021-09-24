@@ -13,9 +13,22 @@ _ssh()
         -*)
             COMPREPLY=( $(compgen -W "$(_parse_help $1)" -- ${cur}) );;
         *)
-            if [ "${prev}" != "-u" ];
+            if [ "${prev:0:1}" != "-" ];
             then COMPREPLY=( $(compgen -W "$(getLocalDirs)" -- ${cur}) );
-            else COMPREPLY=( $(compgen -W "$(getMountedDirs)" -- ${cur}) );
+            elif [ "${prev}" = "-F" ];
+            then COMPREPLY=( $(compgen -W "$(getLocalDirs)" -- ${cur}) );
+            elif [ "${prev}" = "-C" ];
+            then COMPREPLY=( $(compgen -W "$(getLocalDirs)" -- ${cur}) );
+            elif [ "${prev}" = "-f" ];
+            then COMPREPLY=( $(compgen -W "$(getLocalDirs)" -- ${cur}) );
+            elif [ "${prev}" = "-1" ];
+            then COMPREPLY=( $(compgen -W "$(getLocalDirs)" -- ${cur}) );
+            elif [ "${prev}" = "-s" ];
+            then COMPREPLY=( $(compgen -W "$(getLocalDirs)" -- ${cur}) );
+            elif [ "${prev}" = "-d" ];
+            then COMPREPLY=( $(compgen -W "$(getLocalDirs)" -- ${cur}) );
+            elif [ "${prev}" = "-u" ];
+            then COMPREPLY=( $(compgen -W "$(getMountedDirs)" -- ${cur}) );
                 fi;;
     esac
 
