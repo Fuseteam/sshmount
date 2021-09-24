@@ -27,10 +27,21 @@ function getMountedDirs(){
     done;
 }
 
+function fetchHost(){
+    dir=$(sed -n "/$1$/,/^---/p" "$confile"|grep Host);
+    [[ "$dir" ]] && echo $1 && exit 0;
+    numattr=$(grep -1 "$1" "$confile"|awk /Host/|wc -l);
+    if [[ "$numattr" -lt "1" ]]; then attr=$(fetchHostAttribute "$1" 'Host' 'Host');
+    else attr=$(grep -1 "$1" "$confile"|awk '/Host/{print $2}')
+    fi
+    echo $attr;
+}
 
 function fetchHostAttribute(){
-    numhosts=$(sed -n "/$1$/,/^$2/p" "$confile"|awk "/$3/{print \$2}"|wc -l);
+    numhosts=$(sed -n "/$1$/,/^$2/p" "$confile"|grep -c "\-\-\-");
     [[ "$numhosts" -gt "1" && -z $4 ]] && echo "1" && exit 1;
+    numhosts=$(sed -n "/$1$/,/^$2/p" "$confile"|awk "/$3/{print \$2}"|wc -l);
+    [[ "$numhosts" = "2" && -z $4 ]] && attrhost=$(sed -n "/$1$/,/^$2/p" "$confile"|awk "/$3/{print \$2}"|head -1) && echo "$attrhost" && exit 0;
     [[ -z "$4" ]] && attrhost=$(sed -n "/$1$/,/^$2/p" "$confile"|awk "/$3/{print \$2}");
     [[ -n "$4" ]] && attrhost=$(sed -n "/$1$/,/^$2/p" "$confile"|awk "/$3/{printf \"%s %s:%s\",\" $4\",\$2,\$3;}");
     [[ -z "$attrhost" ]] && echo "2" && exit 2;

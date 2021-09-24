@@ -45,19 +45,24 @@ if [ -z "$Host" ]; then
     print_usage;
     exit
 fi
+
+Host=$(fetchHost "$Host");
+[[ -z "$Host" || "$Host" = 2 ]] && { echo host "$Host" not defined in "$confile"; exit 2; }
+
+[[ "$Host" = "1" ]] && { echo no unique match! check in the "$confile" that "$Host" is only used once;exit 1; }
 LD=$(fetchHostAttribute "$Host" '---' 'LocalDirectory');
 RD=$(fetchHostAttribute "$Host" '---' 'RemoteDirectory');
 PFwd=$(fetchHostAttribute "$Host" "---" "PortForwarding");
 LFwd=$(fetchHostAttribute "$Host" "---" "LocalForward" "-L");
 RFwd=$(fetchHostAttribute "$Host" "---" "RemoteForward" "-R");
-[[ "$LD" = "1" ]] && { LD=$(fetchHostAttribute "$Host" 'Host' 'LocalDirectory'); }
-[[ "$RD" = "1" ]] && { RD=$(fetchHostAttribute "$Host" 'Host' 'RemoteDirectory'); }
+[[ "$LD" = "1" || "$RD" = "1" ]] && { echo no unique match! check in the "$confile" that "$Host" defined only once as a directory;exit 1; }
+
 if [[ -n "$PFwd" && "$PFwd" = "yes" && -z "$sshopts" ]]; then
     { sshflag='true'; sshopts="-oClearAllForwardings=no"; }
 elif [[ -n "$PFwd" && "$PFwd" = "yes" && -n "$sshopts" ]]; then
     { sshflag='true'; sshopts="-oClearAllForwardings=no $sshopts"; }
 fi
-[[ -n "$LFwd" && "$LFwd" != "2" ]] && { sshopts="$sshopts$LFwd"; } #sshopts="$sshopts -L$LFwd"; }
+[[ -n "$LFwd" && "$LFwd" != "2" ]] && { sshopts="$sshopts$LFwd"; }
 [[ -n "$RFwd" && "$RFwd" != "2" ]] && { sshopts="$sshopts$RFwd"; }
 #############################################################################################
 #   up to 2 Directories can be assigned to a single host by defining it in the following form 
@@ -91,6 +96,8 @@ fi
 #   all host must be separate by a row of '---' at the moment
 #############################################################################################
 
+Hostchk=$(awk /$Host/ "$confile"|grep -q Host);
+[[ -z $Hostchk ]] && Host=$(fetchHostAttribute "$Host" "---" "Host");
 [[ "$LD" = "2" ]] && { echo host $host missing LocalDirectory attribute in "$confile"; exit 2; }
 [[ "$RD" = "2" ]] && { echo host $host missing RemoteDirectory attribute in "$confile"; exit 2; }
 [ ! -d "$LD" ] && mkdir "$LD";
