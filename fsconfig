@@ -1,51 +1,61 @@
-Host user@ip
-    LocalDirectory /absolute/path/to/local/directory
-    RemoteDirectory /absolute/path/to/remote/directory
----
+=========================================================================================================================================================================
+The following examples "HostName" is the name defined for remote how in the ssh config file
+if you don't have a ssh config file simply replace "HostName" in the example with "user@ip" where "user" is your actual remote username and "ip" is your actual remote ip
 
-------------------------------------------------------
-in combination with a ssh config file
-------------------------------------------------------
+all host must be separated by a "---"
+=========================================================================================================================================================================
+
+-------------------------------------------------------
+form #1
+-------------------------------------------------------
 Host HostName
     LocalDirectory /absolute/path/to/local/directory
     RemoteDirectory /absolute/path/to/remote/directory
 ---
 
-------------------------------------------------------
-mount by LocalDirectory
-------------------------------------------------------
----
+-------------------------------------------------------
+form #2
+-------------------------------------------------------
     LocalDirectory /absolute/path/to/local/directory
     RemoteDirectory /absolute/path/to/remote/directory
 Host HostName
 ---
 
-------------------------------------------------------
-mount by LocalDirectory and by HostName
-------------------------------------------------------
----
+-------------------------------------------------------
+two directories for the same remote host
+-------------------------------------------------------
     LocalDirectory /absolute/path/to/local/directory
     RemoteDirectory /absolute/path/to/remote/directory
 Host HostName
-    LocalDirectory /absolute/path/to/second/local/directory
-    RemoteDirectory /absolute/path/to/second/remote/directory
+    LocalDirectory /absolute/path/to/local/directory2
+    RemoteDirectory /absolute/path/to/remote/directory2
 ---
 
-------------------------------------------------------
-mount by HostName and allow PortForwarding
-------------------------------------------------------
----
+-------------------------------------------------------
+form #1 plus allow PortForwarding
+-------------------------------------------------------
     LocalDirectory /absolute/path/to/local/directory
     RemoteDirectory /absolute/path/to/remote/directory
     PortForwarding yes
 Host HostName
 ---
 
-------------------------------------------------------
-mount by LocalDirectory and allow PortForwarding
-------------------------------------------------------
+-------------------------------------------------------
+form #2 and allow PortForwarding
+-------------------------------------------------------
 Host HostName
     LocalDirectory /absolute/path/to/local/directory
     RemoteDirectory /absolute/path/to/remote/directory
     PortForwarding yes
+---
+
+-------------------------------------------------------
+two directories with PortForwarding enabled for one
+-------------------------------------------------------
+    LocalDirectory /absolute/path/to/local/directory
+    RemoteDirectory /absolute/path/to/remote/directory
+    PortForwarding yes
+Host HostName
+    LocalDirectory /absolute/path/to/local/directory2
+    RemoteDirectory /absolute/path/to/remote/directory2
 ---

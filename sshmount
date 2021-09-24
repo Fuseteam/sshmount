@@ -3,14 +3,6 @@ prefix="@prefix@/lib"
 if [ "${prefix:0:1}" = "@" ]; then prefix=".";fi
 source "${prefix}"/sshmountlib
 
-if [ ! -d "$condir" ]; then
-    mkdir "$HOME"/.ssh
-fi
-
-if [ ! -f "$confile" ]; then
-        cat fsconfig > "$condir"/fsconfig
-fi
-
 flags=();
 fwdflag='';
 sshflag='';
@@ -64,37 +56,6 @@ elif [[ -n "$PFwd" && "$PFwd" = "yes" && -n "$sshopts" ]]; then
 fi
 [[ -n "$LFwd" && "$LFwd" != "2" ]] && { sshopts="$sshopts$LFwd"; }
 [[ -n "$RFwd" && "$RFwd" != "2" ]] && { sshopts="$sshopts$RFwd"; }
-#############################################################################################
-#   up to 2 Directories can be assigned to a single host by defining it in the following form 
-#
-#   ---
-#        LocalDirectory /path/to/local/directory
-#        RemoteDirectory /path/to/remote/directory
-#   Host host
-#        LocalDirectory /path/to/local/directory2
-#        RemoteDirectory /path/to/remote/directory2
-#   ---
-#
-#   for assigning a single directory 2 forms are supported
-#
-#   form #1
-#
-#   ---
-#        LocalDirectory /path/to/local/directory
-#        RemoteDirectory /path/to/remote/directory
-#   Host host
-#   ---
-#
-#   form #2
-#
-#   ---
-#   Host host
-#        LocalDirectory /path/to/local/directory2
-#        RemoteDirectory /path/to/remote/directory2
-#   ---
-#
-#   all host must be separate by a row of '---' at the moment
-#############################################################################################
 
 Hostchk=$(awk /$Host/ "$confile"|grep -q Host);
 [[ -z $Hostchk ]] && Host=$(fetchHostAttribute "$Host" "---" "Host");

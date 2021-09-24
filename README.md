@@ -6,12 +6,11 @@ it makes it possible to run `sshmount hostname` to mount a remote directory on a
 - `sshmount -u host` will unmount the Localdirectory using fusermount
 - `sshmount host` will mount the remote directory from a host on a local directory
 - the host, local diretory and remote directory are specified in the fsconfig file
-- `fsconfig` in this repo is an example config file
-- if `.ssh/fsconfig` doesn't already exist it will create it from the example config file
+- `fsconfig` in this repo is contains examples for writing a the needed config file for this script
 - this can be used in combination with a ssh config file
-- pass through sshfs flags such as -f, -s, -C, -p, -o, -d, -1, -V and -h to sshfs
+- pass through sshfs flags such as -F, -f, -s, -C, -p, -o, -d, -1, -V and -h to sshfs
 - pass through ssh flags with -S example `sshmount -S "-o ClearAllForwardings=no -L 3306:127.0.0.1:3306"`
-- allow ssh tunneling by with -F example: `sshmount -F host`
+- allow ssh tunneling by with -w example: `sshmount -w host`
 - allow ssh tunneling by specifying "PortForwarding yes" in fsconfig
 - allow localforward and remoteforward rules to be added in fsconfig
 - list mounted directories with sshmount -l
