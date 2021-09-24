@@ -15,16 +15,17 @@ flags=();
 fwdflag='';
 sshflag='';
 sshopts='';
-while getopts 'fsCu:p:o:FS:d1hlV' flag; do
+reqArg=false;
+while getopts 'fsCu:p:o:F:S:d1hiwlV' flag; do
     case ${flag} in
        u) LD=$(fetchHostAttribute "$2" '---' 'LocalDirectory');
            [[ "$LD" = "1" ]] && { LD=$(fetchHostAttribute "$2" 'Host' 'LocalDirectory'); }
            [ -n "$LD" ] && { fusermount -"$flag" "$LD" && rmdir "$LD" || echo "$LD" is not mounted; }\
                || echo host missing LocalDirectory attribute in "$confile"
            exit;;
-       F) fwdflag='true';;
+       w) fwdflag='true';;
        S) sshflag='true';sshopts=${OPTARG};;
-       p|o) flags+=(-$flag "${OPTARG}");;
+       F|p|o) flags+=(-$flag "${OPTARG}");reqArg=true;;
        C|f|1|s|d) flags+=(-"$flag");;
        V) sshfs --version;exit;;
        l) listMounts;exit;;
@@ -34,8 +35,10 @@ while getopts 'fsCu:p:o:FS:d1hlV' flag; do
 done
 if [[ -z "${flags[*]}" && -z "$fwdflag" && -z "$sshflag" ]]; then
     Host=$1
+elif [[ -z "${reqArg}" ]]; then
+    Host=${BASH_ARGV[0]};
 else
-    Host=${BASH_ARGV[0]}
+    echo "missing argument";exit;
 fi
 
 if [ -z "$Host" ]; then
