@@ -6,7 +6,7 @@ function listMounts(){
 readarray -t mntpnts < <(awk '/LocalDirectory/{print $2}' "${confile}");
 for mntpnt in "${mntpnts[@]}"
 do
-    awk "/${mntpnt//\//\\\/}/{print \$2}" /etc/mtab
+    awk "/${mntpnt//\//\\/}/{print \$2}" /etc/mtab
 done;
 }
 
