@@ -8,11 +8,12 @@ fwdflag='';
 sshflag='';
 sshopts='';
 reqArg=false;
-while getopts 'fsCu:p:o:F:S:d1hiwlV' flag; do
+while getopts 'r:fsCu:p:o:F:S:d1hiwlV' flag; do
     case ${flag} in
        u) unmount $flag $2;exit;;
        w) fwdflag='true';;
        S) sshflag='true';sshopts=${OPTARG};;
+       r) remountflag='true';reqArg='';;
        F|p|o) flags+=(-$flag "${OPTARG}");reqArg=true;;
        C|f|1|s|d) flags+=(-"$flag");;
        V) sshfs --version;exit;;
@@ -21,14 +22,13 @@ while getopts 'fsCu:p:o:F:S:d1hiwlV' flag; do
            exit;;
     esac
 done
-if [[ -z "${flags[*]}" && -z "$fwdflag" && -z "$sshflag" ]]; then
+if [[ -z "${flags[*]}" && -z "$fwdflag" && -z "$sshflag" && -z "$remountflag" ]]; then
     Host=$1
 elif [[ -z "${reqArg}" ]]; then
     Host=${BASH_ARGV[0]};
 else
     echo "missing argument";exit;
 fi
-
 if [ -z "$Host" ]; then
     print_usage;
     exit
@@ -46,6 +46,7 @@ Host=$(fetchHost "$Host");
 [[ -z "$Host" || "$Host" = 2 ]] && { echo host "$Host" not defined in "$confile"; exit 2; }
 
 [[ "$Host" = "1" ]] && { echo no unique match! check in the "$confile" that "$Host" is only used once;exit 1; }
+[ ! -z "$remountflag" ] && unmount u $Host;
 LD=$(fetchHostAttribute "$Host" '---' 'LocalDirectory');
 RD=$(fetchHostAttribute "$Host" '---' 'RemoteDirectory');
 PFwd=$(fetchHostAttribute "$Host" "---" "PortForwarding");
