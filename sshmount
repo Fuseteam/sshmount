@@ -11,7 +11,7 @@ reqArg=false;
 while getopts 'r:fsCu:p:o:F:S:d1hiwlV' flag; do
     case ${flag} in
        u) unmount "$flag" "$2";exit;;
-       w) fwdflag='true';;
+       w) fwdflag='true';reqArg='';;
        S) sshflag='true';sshopts=${OPTARG};;
        r) remountflag='true';reqArg='';;
        F|p|o) flags+=(-$flag "${OPTARG}");reqArg='true';;
