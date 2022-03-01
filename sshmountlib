@@ -48,6 +48,13 @@ function fetchHostAttribute(){
     echo "$attrhost"
 }
 
+unmount() {
+    LD=$(fetchHostAttribute "$2" '---' 'LocalDirectory');
+    [[ "$LD" = "1" ]] && { LD=$(fetchHostAttribute "$2" 'Host' 'LocalDirectory'); }
+    [ -n "$LD" ] && { fusermount -"$1" "$LD" && rmdir "$LD" || echo "$LD" is not mounted; }\
+       || echo host missing LocalDirectory attribute in "$confile"
+}
+
 function print_usage(){
 echo 'usage: sshmount [options] [user@]host
 
