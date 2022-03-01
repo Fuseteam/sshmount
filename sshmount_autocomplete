@@ -29,6 +29,8 @@ _ssh()
             then COMPREPLY=( $(compgen -W "$(getLocalDirs)" -- ${cur}) );
             elif [ "${prev}" = "-u" ];
             then COMPREPLY=( $(compgen -W "$(getMountedDirs)" -- ${cur}) );
+            elif [ "${prev}" = "-r" ];
+            then COMPREPLY=( $(compgen -W "$(getMountedDirs)" -- ${cur}) );
                 fi;;
     esac
 
