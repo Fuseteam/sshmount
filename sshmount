@@ -10,7 +10,7 @@ sshopts='';
 reqArg=false;
 while getopts 'r:fsCu:p:o:F:S:d1hiwlV' flag; do
     case ${flag} in
-       u) unmount $flag $2;exit;;
+       u) unmount "$flag" "$2";exit;;
        w) fwdflag='true';;
        S) sshflag='true';sshopts=${OPTARG};;
        r) remountflag='true';reqArg='';;
@@ -38,7 +38,7 @@ fi
 trap ctrl_c INT
 
 function ctrl_c() {
-    unmount u $Host;
+    unmount u "$Host";
     exit;
 }
 
@@ -46,7 +46,7 @@ Host=$(fetchHost "$Host");
 [[ -z "$Host" || "$Host" = 2 ]] && { echo host "$Host" not defined in "$confile"; exit 2; }
 
 [[ "$Host" = "1" ]] && { echo no unique match! check in the "$confile" that "$Host" is only used once;exit 1; }
-[ ! -z "$remountflag" ] && unmount u $Host;
+[ ! -z "$remountflag" ] && unmount u "$Host";
 LD=$(fetchHostAttribute "$Host" '---' 'LocalDirectory');
 RD=$(fetchHostAttribute "$Host" '---' 'RemoteDirectory');
 PFwd=$(fetchHostAttribute "$Host" "---" "PortForwarding");
@@ -62,10 +62,10 @@ fi
 [[ -n "$LFwd" && "$LFwd" != "2" ]] && { sshopts="$sshopts$LFwd"; }
 [[ -n "$RFwd" && "$RFwd" != "2" ]] && { sshopts="$sshopts$RFwd"; }
 
-Hostchk=$(awk /$Host/ "$confile"|grep -q Host);
+Hostchk=$(awk /"$Host"/ "$confile"|grep -q Host);
 [[ -z $Hostchk ]] && Host=$(fetchHostAttribute "$Host" "---" "Host");
-[[ "$LD" = "2" ]] && { echo host $host missing LocalDirectory attribute in "$confile"; exit 2; }
-[[ "$RD" = "2" ]] && { echo host $host missing RemoteDirectory attribute in "$confile"; exit 2; }
+[[ "$LD" = "2" ]] && { echo host "$Host" missing LocalDirectory attribute in "$confile"; exit 2; }
+[[ "$RD" = "2" ]] && { echo host "$Host" missing RemoteDirectory attribute in "$confile"; exit 2; }
 [ ! -d "$LD" ] && mkdir "$LD";
 [ ! -z "$fwdflag" ] && fwd=",ssh_command=ssh -oClearAllForwardings=no";
 [ ! -z "$sshflag" ] && ssh=",ssh_command=ssh $sshopts";

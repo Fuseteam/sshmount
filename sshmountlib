@@ -3,7 +3,7 @@ condir="$HOME/.ssh"
 confile="$condir/fsconfig"
 
 function listMounts(){
-readarray -t mntpnts < <(awk '/LocalDirectory/{print $2}' ${confile});
+readarray -t mntpnts < <(awk '/LocalDirectory/{print $2}' "${confile}");
 for mntpnt in "${mntpnts[@]}"
 do
     awk "/${mntpnt//\//\\\/}/{print \$2}" /etc/mtab
@@ -11,11 +11,11 @@ done;
 }
 
 function getLocalDirs(){
-   awk '/Host/{print $2}' ${confile}
-   readarray -t LocalDirs < <(awk '/LocalDirectory/{print $2}' ${confile})
-   for LocalDir in ${LocalDirs[@]}
+   awk '/Host/{print $2}' "${confile}"
+   readarray -t LocalDirs < <(awk '/LocalDirectory/{print $2}' "${confile}")
+   for LocalDir in "${LocalDirs[@]}"
    do
-       basename $LocalDir;
+       basename "$LocalDir";
    done;
 }
 
@@ -23,18 +23,18 @@ function getMountedDirs(){
     readarray -t mounts < <(listMounts);
     for mount in "${mounts[@]}"
     do
-        basename $mount;
+        basename "$mount";
     done;
 }
 
 function fetchHost(){
     dir=$(sed -n "/$1$/,/^---/p" "$confile"|grep Host);
-    [[ "$dir" ]] && echo $1 && exit 0;
+    [[ "$dir" ]] && echo "$1" && exit 0;
     numattr=$(grep -1 "$1" "$confile"|awk /Host/|wc -l);
     if [[ "$numattr" -lt "1" ]]; then attr=$(fetchHostAttribute "$1" 'Host' 'Host');
     else attr=$(grep -1 "$1" "$confile"|awk '/Host/{print $2}')
     fi
-    echo $attr;
+    echo "$attr";
 }
 
 function fetchHostAttribute(){
