@@ -52,6 +52,7 @@ RD=$(fetchHostAttribute "$Host" '---' 'RemoteDirectory');
 PFwd=$(fetchHostAttribute "$Host" "---" "PortForwarding");
 LFwd=$(fetchHostAttribute "$Host" "---" "LocalForward" "-L");
 RFwd=$(fetchHostAttribute "$Host" "---" "RemoteForward" "-R");
+checkMounts $LD;
 [[ "$LD" = "1" || "$RD" = "1" ]] && { echo no unique match! check in the "$confile" that "$Host" defined only once as a directory;exit 1; }
 
 if [[ -n "$PFwd" && "$PFwd" = "yes" && -z "$sshopts" ]]; then

@@ -55,6 +55,14 @@ unmount() {
     fusermount -"$1" "$LD" && rmdir "$LD" || echo "$LD" is not mounted;
 }
 
+checkMounts() {
+    readarray -t mounts < <(listMounts);
+    for mount in "${mounts[@]}"
+    do
+        [ "$mount" = "$1" ] && echo $(basename "$1") is already mounted && exit 3;
+    done;
+}
+
 function print_usage(){
 echo 'usage: sshmount [options] [user@]host
 
