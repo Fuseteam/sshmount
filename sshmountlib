@@ -64,6 +64,7 @@ fusermount options:
 
 [unmount]
     -u HOST                 unmount and delete the mountpoint
+    -r HOST                 remount the mountpoint
     -l                      list all mountpoints
     -w                      enable ssh forwarding
     -S                      pass ssh options
