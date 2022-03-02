@@ -51,8 +51,7 @@ function fetchHostAttribute(){
 unmount() {
     LD=$(fetchHostAttribute "$2" '---' 'LocalDirectory');
     [[ "$LD" = "1" ]] && { LD=$(fetchHostAttribute "$2" 'Host' 'LocalDirectory'); }
-    [ -n "$LD" ] && { fusermount -"$1" "$LD" && rmdir "$LD" || echo "$LD" is not mounted; }\
-       || echo host missing LocalDirectory attribute in "$confile"
+    fusermount -"$1" "$LD" && rmdir "$LD" || echo "$LD" is not mounted;
 }
 
 function print_usage(){
