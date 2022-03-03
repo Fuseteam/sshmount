@@ -70,5 +70,4 @@ Hostchk=$(awk /"$Host"/ "$confile"|grep -q Host);
 [ ! -d "$LD" ] && mkdir "$LD";
 [ ! -z "$fwdflag" ] && fwd=",ssh_command=ssh -oClearAllForwardings=no";
 [ ! -z "$sshflag" ] && ssh=",ssh_command=ssh $sshopts";
-echo + sshfs -o reconnect,ServerAliveInterval=15,sshfs_sync,sync_readdir"$fwd""$ssh" "${flags[@]}" "$LD" "$Host":"$RD";
-sshfs -o reconnect,ServerAliveInterval=15,sshfs_sync,sync_readdir"$fwd""$ssh" "${flags[@]}" "$LD" "$Host":"$RD";
+sshfs -o reconnect,ServerAliveInterval=15,sync_readdir,kernel_cache,compression=yes"$fwd""$ssh" "${flags[@]}" "$LD" "$Host":"$RD";
