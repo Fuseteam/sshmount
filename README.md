@@ -17,10 +17,11 @@ it makes it possible to run `sshmount hostname` to mount a remote directory on a
 - remount a mounted directory with `sshmount -r host`
 
 # Install
+## Do not use sudo, the script will install it in your home directory
 ```
-sudo make install
+make install
 ```
 # Uninstall
 ```
-sudo make uninstall
+make uninstall
 ```

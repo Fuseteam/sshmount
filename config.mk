@@ -2,6 +2,6 @@
 VERSION = 4.9
 
 # paths
-PREFIX = /usr/local
+PREFIX = $(HOME)/.local
 MANPREFIX = $(PREFIX)/share/man
-COMPREFIX = /etc/bash_completion.d
+COMPREFIX = $(PREFIX)/share/bash-completion
