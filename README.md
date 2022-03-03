@@ -17,6 +17,12 @@ it makes it possible to run `sshmount hostname` to mount a remote directory on a
 - remount a mounted directory with `sshmount -r host`
 
 # Install
+- Download the files
+[![download](https://github.com/Fuseteam/systemd-service-files/blob/main/images/download.jpg)](https://github.com/Fuseteam/sshmount/archive/refs/heads/master.zip)
+- extract the files
+- open the extract folders
+- right click on an empty area and click "open in terminal"
+- run the following command
 ## Do not use sudo, the script will install it under your home directory
 ```
 make install
