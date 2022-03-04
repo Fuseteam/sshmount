@@ -29,7 +29,7 @@ it makes it possible to run `sshmount hostname` to mount a remote directory on a
 make install
 ```
 # Uninstall
-## Do not use sudo, the script was installed under your home directory
+## Do not use sudo, it was installed under your home directory
 ```
 make uninstall
 ```
