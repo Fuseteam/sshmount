@@ -4,6 +4,7 @@ include config.mk
 
 install:
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
+	mkdir -p $(DESTDIR)$(PREFIX)/lib
 	mkdir -p $(DESTDIR)$(PREFIX)/share/bash-completion
 	cp -f sshmount $(DESTDIR)$(PREFIX)/bin
 	cp -f sshmountlib $(DESTDIR)$(PREFIX)/lib
