@@ -4,4 +4,4 @@ VERSION = 4.9
 # paths
 PREFIX = $(HOME)/.local
 MANPREFIX = $(PREFIX)/share/man
-COMPREFIX = $(PREFIX)/share/bash-completion
+COMPREFIX = $(PREFIX)/share/bash-completion/completions
