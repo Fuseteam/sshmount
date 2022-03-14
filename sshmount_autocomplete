@@ -1,6 +1,5 @@
 #!/bin/bash
-prefix="@prefix@/lib"
-if [ "${prefix:0:1}" = "@" ]; then prefix=".";fi
+prefix="${HOME}/.local/lib"
 source "${prefix}"/sshmountlib
 
 _ssh()
@@ -13,7 +12,9 @@ _ssh()
         -*)
             COMPREPLY=( $(compgen -W "$(_parse_help $1)" -- ${cur}) );;
         *)
-            if [ "${prev:0:1}" != "-" ];
+            if [ ! -f "$confile" ];
+            then COMPREPLY=( $(compgen -W "$(echo "please setup ${confile} first")" -- ${cur}) );;
+            elif [ "${prev:0:1}" != "-" ];
             then COMPREPLY=( $(compgen -W "$(getLocalDirs)" -- ${cur}) );
             elif [ "${prev}" = "-w" ];
             then COMPREPLY=( $(compgen -W "$(getLocalDirs)" -- ${cur}) );

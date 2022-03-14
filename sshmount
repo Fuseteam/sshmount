@@ -1,7 +1,10 @@
 #!/bin/bash
-prefix="@prefix@/lib"
-if [ "${prefix:0:1}" = "@" ]; then prefix=".";fi
+prefix="${HOME}/.local/lib"
 source "${prefix}"/sshmountlib
+if [ ! -f $confile ]; then
+	echo please setup ${confile} first;
+	exit 1;
+fi
 
 flags=();
 fwdflag='';
