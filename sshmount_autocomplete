@@ -13,7 +13,7 @@ _ssh()
             COMPREPLY=( $(compgen -W "$(_parse_help $1)" -- ${cur}) );;
         *)
             if [ ! -f "$confile" ];
-            then COMPREPLY=( $(compgen -W "$(echo "please setup ${confile} first")" -- ${cur}) );;
+            then COMPREPLY=( $(compgen -W "$(echo "please setup ${confile} first")" -- ${cur}) );
             elif [ "${prev:0:1}" != "-" ];
             then COMPREPLY=( $(compgen -W "$(getLocalDirs)" -- ${cur}) );
             elif [ "${prev}" = "-w" ];
