@@ -6,7 +6,6 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the bash branch
   push:
-    branches: [ master ]
     tags: [ '*' ]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -17,7 +16,6 @@ jobs:
   # This workflow contains a single job called "build"
   release:
     # The type of runner that the job will run on
-    if: startsWith(github.ref, 'refs/tags')
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -33,7 +31,6 @@ jobs:
         run: zip -r sshmount.zip *
 
       - name: setup release
-        if: startsWith(github.ref, 'refs/tags')
         uses: spenserblack/actions-tag-to-release@master
 
       - name: Make release
