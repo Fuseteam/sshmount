@@ -28,7 +28,12 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: zip it
-        run: zip -r sshmount.zip *
+        uses: tuxecure/zip-it@v1
+        with:
+          prefix: ${HOME}/.local
+          pkg_directories: bin lib share
+          maintainer: fuseteam
+          package_name: sshmount
 
       - name: setup release
         uses: spenserblack/actions-tag-to-release@master
