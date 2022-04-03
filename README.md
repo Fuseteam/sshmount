@@ -19,7 +19,7 @@ it makes it possible to run `sshmount hostname` to mount a remote directory on a
 # Install
 - Download the files below
 
-[![download](https://github.com/Fuseteam/linus-proof/blob/main/images/download.png)](https://github.com/Fuseteam/sshmount/releases/latest/sshmount.zip)
+[![download](https://github.com/Fuseteam/linus-proof/blob/main/images/download.png)](https://github.com/Fuseteam/sshmount/releases/latest/download/sshmount.zip)
 - open a terminal
 - run `unzip Downloads/sshmount.zip -d sshmount`
 - run `sshmount/sshmount setup`
