@@ -19,7 +19,7 @@ install_sshmount(){
 	mkdir -p ${prefix}/bin
 	mkdir -p ${prefix}/lib
 	mkdir -p ${comprefix}
-	chmod 755 ${prefix}/bin/*
+	chmod 755 ${SCRP_DIR}/bin/*
 	cp -f $SCRP_DIR/bin/* ${prefix}/bin
 	cp -f $SCRP_DIR/lib/* ${prefix}/lib
 	cp -rf $SCRP_DIR/share/* ${prefix}/share
