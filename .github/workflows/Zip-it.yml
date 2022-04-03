@@ -28,7 +28,7 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: zip it
-        uses: tuxecure/zip-it@v1
+        uses: tuxecure/zip-it@v1.1
         with:
           prefix: ${HOME}/.local
           pkg_directories: bin lib share
