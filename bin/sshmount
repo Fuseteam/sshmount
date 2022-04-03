@@ -1,0 +1,77 @@
+#!/bin/bash
+prefix="${HOME}/.local/lib"
+source "${prefix}"/sshmountlib
+if [ ! -f $confile ]; then
+	echo please setup ${confile} first;
+	exit 1;
+fi
+
+flags=();
+fwdflag='';
+sshflag='';
+sshopts='';
+reqArg=false;
+while getopts 'r:fsCu:p:o:F:S:d1hiwlV' flag; do
+    case ${flag} in
+       u) unmount "$flag" "$2";exit;;
+       w) fwdflag='true';reqArg='';;
+       S) sshflag='true';sshopts=${OPTARG};;
+       r) remountflag='true';reqArg='';;
+       F|p|o) flags+=(-$flag "${OPTARG}");reqArg='true';;
+       C|f|1|s|d) flags+=(-"$flag");;
+       V) sshfs --version;exit;;
+       l) listMounts;exit;;
+       *) print_usage;
+           exit;;
+    esac
+done
+if [[ -z "${flags[*]}" && -z "$fwdflag" && -z "$sshflag" && -z "$remountflag" ]]; then
+    HostArg=$1
+elif [[ -z "${reqArg}" ]]; then
+    HostArg=${BASH_ARGV[0]};
+else
+    echo "missing argument";exit;
+fi
+if [ -z "$HostArg" ]; then
+    print_usage;
+    exit
+fi
+
+#trap ctrl-c and call ctrl_c()
+trap "set +x;ctrl_c" INT
+
+function ctrl_c() {
+    unmount u "$HostArg";
+    exit;
+}
+
+Host=$(fetchHost "$HostArg");
+[[ -z "$Host" || "$Host" = 2 ]] && { echo host "$Host" not defined in "$confile"; exit 2; }
+
+[[ "$Host" = "1" ]] && { echo no unique match! check in the "$confile" that "$Host" is only used once;exit 1; }
+[ ! -z "$remountflag" ] && unmount u "$HostArg";
+LD=$(fetchHostAttribute "$Host" '---' 'LocalDirectory');
+RD=$(fetchHostAttribute "$Host" '---' 'RemoteDirectory');
+PFwd=$(fetchHostAttribute "$Host" "---" "PortForwarding");
+LFwd=$(fetchHostAttribute "$Host" "---" "LocalForward" "-L");
+RFwd=$(fetchHostAttribute "$Host" "---" "RemoteForward" "-R");
+checkMounts $LD;
+[[ "$LD" = "1" || "$RD" = "1" ]] && { echo no unique match! check in the "$confile" that "$Host" defined only once as a directory;exit 1; }
+
+if [[ -n "$PFwd" && "$PFwd" = "yes" && -z "$sshopts" ]]; then
+    { sshflag='true'; sshopts="-oClearAllForwardings=no"; }
+elif [[ -n "$PFwd" && "$PFwd" = "yes" && -n "$sshopts" ]]; then
+    { sshflag='true'; sshopts="-oClearAllForwardings=no $sshopts"; }
+fi
+[[ -n "$LFwd" && "$LFwd" != "2" ]] && { sshopts="$sshopts$LFwd"; }
+[[ -n "$RFwd" && "$RFwd" != "2" ]] && { sshopts="$sshopts$RFwd"; }
+
+Hostchk=$(awk /"$Host"/ "$confile"|grep -q Host);
+[[ -z $Hostchk ]] && Host=$(fetchHostAttribute "$Host" "---" "Host");
+[[ "$LD" = "2" ]] && { echo host "$Host" missing LocalDirectory attribute in "$confile"; exit 2; }
+[[ "$RD" = "2" ]] && { echo host "$Host" missing RemoteDirectory attribute in "$confile"; exit 2; }
+[ ! -d "$LD" ] && mkdir "$LD";
+[ ! -z "$fwdflag" ] && fwd=",ssh_command=ssh -oClearAllForwardings=no";
+[ ! -z "$sshflag" ] && ssh=",ssh_command=ssh $sshopts";
+set -x
+sshfs -o reconnect,ServerAliveInterval=15,sync_readdir,kernel_cache,compression=yes"$fwd""$ssh" "${flags[@]}" "$LD" "$Host":"$RD";
