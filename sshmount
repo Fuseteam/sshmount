@@ -11,7 +11,7 @@ download_sshmount(){
 }
 
 unzip_sshmount() {
-	say "unpacking..."
+	echo "unpacking..."
 	unzip -q $HOME/Downloads/${name}.zip -d $HOME/${name}
 }
 
