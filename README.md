@@ -20,16 +20,8 @@ it makes it possible to run `sshmount hostname` to mount a remote directory on a
 - Download the files below
 
 [![download](https://github.com/Fuseteam/linus-proof/blob/main/images/download.png)](https://github.com/Fuseteam/sshmount/releases/latest/sshmount.zip)
-- extract the files
-- open the extract folders
-- right click on an empty area and click "open in terminal"
-- run the following command
-## Do not use sudo, the script will install it under your home directory
-```
-make install
-```
-# Uninstall
-## Do not use sudo, it was installed under your home directory
-```
-make uninstall
-```
+- open a terminal
+- run `unzip Downloads/sshmount.zip -d sshmount`
+- run `sshmount/sshmount setup`
+- ???
+- profit
