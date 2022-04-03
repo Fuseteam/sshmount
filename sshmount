@@ -1,9 +1,6 @@
 #!/bin/bash
 SCRP_DIR=$(dirname "${BASH_SOURCE[0]}")
-prefix="$HOME/.local";
-comprefix="${prefix}/share/bash-completion/completions"
-name=sshmount
-maintainer=fuseteam
+source $SCRP_DIR/crackle.conf
 
 download_sshmount(){
 	echo "downloading latest version"
