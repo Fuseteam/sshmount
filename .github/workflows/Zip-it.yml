@@ -28,7 +28,7 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: zip it
-        uses: tuxecure/zip-it@v2.1
+        uses: tuxecure/zip-it@master
         with:
           pkg_directories: bin lib share
           owner: fuseteam
