@@ -50,13 +50,14 @@ function fetchHostAttribute(){
 
 unmount() {
     LD=$(fetchHostAttribute "$2" '---' 'LocalDirectory');
+    RMD=$(fetchHostAttribute "$2" '---' 'UnmountRmdir');
     [[ "$LD" = "1" ]] && { LD=$(fetchHostAttribute "$2" 'Host' 'LocalDirectory'); }
     readarray -t mounts < <(listMounts);
     for mount in "${mounts[@]}"
     do
         [ "$mount" = "$LD" ] && {
             set -x
-            fusermount -"$1" "$LD" && rmdir "$LD";
+            fusermount -"$1" "$LD" && [[ "$RMD" != *[Nn]* ]] && rmdir "$LD";
             set +x
             ULD='true'
             break;
