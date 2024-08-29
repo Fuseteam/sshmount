@@ -51,6 +51,10 @@ Host=$(fetchHost "$HostArg");
 
 [[ "$Host" = "1" ]] && { echo no unique match! check in the "$confile" that "$Host" is only used once;exit 1; }
 [ ! -z "$remountflag" ] && unmount u "$HostArg";
+UseSSHConfigForwards=$(fetchHostAttribute "$Host" '---' 'UseSSHConfigForwards');
+if [[ $UseSSHConfigForwards != "2" ]]; then
+    Fwds=$( fetchSSHConfigForwards "$UseSSHConfigForwards" )
+fi
 LD=$(fetchHostAttribute "$Host" '---' 'LocalDirectory');
 RD=$(fetchHostAttribute "$Host" '---' 'RemoteDirectory');
 PFwd=$(fetchHostAttribute "$Host" "---" "PortForwarding");
@@ -69,7 +73,13 @@ fi
 [[ -n "$LFwd" && "$LFwd" != "2" ]] && { sshopts="$sshopts$LFwd"; }
 [[ -n "$RFwd" && "$RFwd" != "2" ]] && { sshopts="$sshopts$RFwd"; }
 [[ -n "$DFwd" && "$DFwd" != "2" ]] && { sshopts="$sshopts$DFwd"; }
-[[ "$AgtFwd" == *[Yy]* ]] && { sshopts="-A $sshopts"; }
+if [[ "$AgtFwd" == *[Yy]* ]]; then
+    Fwds="-A $Fwds"
+elif [[ "$AgtFwd" == *[Nn]* ]]; then
+    # remove -A when found in ~/.ssh/config but disabled in ~/.ssh/fsconfig
+    Fwds=$(echo "${Fwds}" | sed -E 's/(^| )-A( |$)//g')
+fi
+sshopts="${Fwds}${sshopts}"
 
 Hostchk=$(awk /"$Host"/ "$confile"|grep -q Host);
 [[ -z $Hostchk ]] && Host=$(fetchHostAttribute "$Host" "---" "Host");

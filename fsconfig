@@ -59,3 +59,25 @@ Host HostName
     LocalDirectory /absolute/path/to/local/directory2
     RemoteDirectory /absolute/path/to/remote/directory2
 ---
+
+-------------------------------------------------------
+other forwarding options
+-------------------------------------------------------
+Host host1
+    LocalDirectory /absolute/path/to/local/directory1
+    RemoteDirectory /absolute/path/to/remote/directory1
+    LocalForward 8888 127.0.0.1:8888
+    RemoteForward 8889 127.0.0.1:8889
+    DynamicForward 127.0.0.1:5000
+    ForwardAgent yes
+---
+Host host2
+    LocalDirectory /absolute/path/to/local/directory2
+    RemoteDirectory /absolute/path/to/remote/directory2
+    UseSSHConfigForwards host2
+---
+Host host3
+    LocalDirectory /absolute/path/to/local/directory2
+    RemoteDirectory /absolute/path/to/remote/directory2
+    UseSSHConfigForwards other_hostname_in_ssh_config
+---

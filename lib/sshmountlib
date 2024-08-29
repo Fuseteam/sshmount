@@ -74,6 +74,19 @@ checkMounts() {
     done;
 }
 
+function fetchSSHConfigForwards() {
+    SSHForwards=$(ssh -G "$1" 2> /dev/null)
+    _ret=$?
+    if [[ $_ret != 0 ]]; then
+        echo "error calling 'ssh -G $1': $_ret" > /dev/stderr
+        exit 2
+    fi
+    out=$(echo "${SSHForwards}" \
+              | sed -nE 's/[][]//g; s/^localforward\s+(\S+)\s+(.*)/ -L \1:\2 /gp; s/^dynamicforward\s+(.\S+).*/ -D \1 /gp; s/^forwardagent\s+[Yy].*/ -A /gp;')
+    # remove inline newline
+    echo "${out//[$'\r\n']}"
+}
+
 function print_usage(){
 echo 'usage: sshmount [options] [user@]host
 
