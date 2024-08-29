@@ -38,13 +38,13 @@ if [ -z "$HostArg" ]; then
     exit
 fi
 
-#trap ctrl-c and call ctrl_c()
-trap "set +x;ctrl_c" INT
-
 function ctrl_c() {
     unmount u "$HostArg";
     exit;
 }
+
+#trap ctrl-c and call ctrl_c()
+trap "set +x;ctrl_c" INT
 
 Host=$(fetchHost "$HostArg");
 [[ -z "$Host" || "$Host" = 2 ]] && { echo host "$Host" not defined in "$confile"; exit 2; }
