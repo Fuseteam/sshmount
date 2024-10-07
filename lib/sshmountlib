@@ -50,13 +50,14 @@ function fetchHostAttribute(){
 
 unmount() {
     LD=$(fetchHostAttribute "$2" '---' 'LocalDirectory');
+    RMD=$(fetchHostAttribute "$2" '---' 'UnmountRmdir');
     [[ "$LD" = "1" ]] && { LD=$(fetchHostAttribute "$2" 'Host' 'LocalDirectory'); }
     readarray -t mounts < <(listMounts);
     for mount in "${mounts[@]}"
     do
         [ "$mount" = "$LD" ] && {
             set -x
-            fusermount -"$1" "$LD" && rmdir "$LD";
+            fusermount -"$1" "$LD" && [[ "$RMD" != *[Nn]* ]] && rmdir "$LD";
             set +x
             ULD='true'
             break;
@@ -71,6 +72,19 @@ checkMounts() {
     do
         [ "$mount" = "$1" ] && echo $(basename "$1") is already mounted && exit 3;
     done;
+}
+
+function fetchSSHConfigForwards() {
+    SSHForwards=$(ssh -G "$1" 2> /dev/null)
+    _ret=$?
+    if [[ $_ret != 0 ]]; then
+        echo "error calling 'ssh -G $1': $_ret" > /dev/stderr
+        exit 2
+    fi
+    out=$(echo "${SSHForwards}" \
+              | sed -nE 's/[][]//g; s/^localforward\s+(\S+)\s+(.*)/ -L \1:\2 /gp; s/^dynamicforward\s+(.\S+).*/ -D \1 /gp; s/^forwardagent\s+[Yy].*/ -A /gp;')
+    # remove inline newline
+    echo "${out//[$'\r\n']}"
 }
 
 function print_usage(){
